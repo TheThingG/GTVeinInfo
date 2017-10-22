@@ -1,6 +1,8 @@
 package org.prank;
 
 import javax.swing.*;
+
+
 import java.awt.*;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
@@ -63,17 +65,26 @@ public class MainFrame extends JFrame {
     private Tuple generateGT(Random random, int chX, int chZ, String dim) {
         /*if (!((chX - 1) % 3 == 0 && (chZ - 1) % 3 == 0)) return null;*/
         if (Math.abs(chX) % 3 == 1 && Math.abs(chZ) % 3 == 1){
-	        boolean tmp = true;
-	        for (int i = 0; i < 256 && tmp; i++) {
-	            int tRandomWeight = random.nextInt(OreVein.totalWeight);
-	            for (OreVein oreVein : OreVein.ores) {
-	                tRandomWeight -= oreVein.weight;
-	                if (tRandomWeight > 0) continue;
-	                int y = oreVein.executeWorldgen(random, dim, chX, chZ);
-	                if (y != -1) 
-	                	return new Tuple(y, oreVein.name);
-	                break;
-	            }
+	        boolean tmp = false;
+	        int oreveinPercentage = 100;//TODO:Вынести в конфиг
+	        int oreveinAttempts = 64;//TODO:Вынести в конфиг
+	        int oreveinRNG = random.nextInt(100);
+	        if (( oreveinRNG < oreveinPercentage) && (OreVein.totalWeight > 0) && (OreVein.ores.size() > 0)){
+	        	tmp=true;
+		        /*for (int i = 0; i < 256 && tmp; i++) {*/
+		        for (int i = 0; i < oreveinAttempts && tmp; i++) {
+		            int tRandomWeight = random.nextInt(OreVein.totalWeight);
+		            for (OreVein oreVein : OreVein.ores) {
+		                tRandomWeight -= oreVein.weight;
+		                if (tRandomWeight > 0) continue;
+		                int y = oreVein.executeWorldgen(random, dim, chX, chZ);
+		                if (y != -1){ 
+		                	tmp=false;
+		                	return new Tuple(y, oreVein.name);
+		                }
+		                break;
+		            }
+		        }
 	        }
 	    }
         return null;
