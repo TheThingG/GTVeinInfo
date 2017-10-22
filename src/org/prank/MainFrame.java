@@ -61,18 +61,21 @@ public class MainFrame extends JFrame {
     }
 
     private Tuple generateGT(Random random, int chX, int chZ, String dim) {
-        if (!((chX - 1) % 3 == 0 && (chZ - 1) % 3 == 0)) return null;
-
-        for (int i = 0; i < 256; i++) {
-            int tRandomWeight = random.nextInt(OreVein.totalWeight);
-            for (OreVein oreVein : OreVein.ores) {
-                tRandomWeight -= oreVein.weight;
-                if (tRandomWeight > 0) continue;
-                int y = oreVein.executeWorldgen(random, dim, chX, chZ);
-                if (y != -1) return new Tuple(y, oreVein.name);
-                break;
-            }
-        }
+        /*if (!((chX - 1) % 3 == 0 && (chZ - 1) % 3 == 0)) return null;*/
+        if (Math.abs(chX) % 3 == 1 && Math.abs(chZ) % 3 == 1){
+	        boolean tmp = true;
+	        for (int i = 0; i < 256 && tmp; i++) {
+	            int tRandomWeight = random.nextInt(OreVein.totalWeight);
+	            for (OreVein oreVein : OreVein.ores) {
+	                tRandomWeight -= oreVein.weight;
+	                if (tRandomWeight > 0) continue;
+	                int y = oreVein.executeWorldgen(random, dim, chX, chZ);
+	                if (y != -1) 
+	                	return new Tuple(y, oreVein.name);
+	                break;
+	            }
+	        }
+	    }
         return null;
     }
 

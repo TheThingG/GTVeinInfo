@@ -10,37 +10,37 @@ import java.util.*;
 public class ConfigReader {
     private static List<String> gtOreList = new ArrayList<String>() {{
         add("naquadah");
-        add("lignite");
-        add("coal");
-        add("magnetite");
-        add("gold");
-        add("iron");
-        add("cassiterite");
-        add("tetrahedrite");
-        add("netherquartz");
-        add("sulfur");
-        add("copper");
-        add("bauxite");
-        add("salts");
-        add("redstone");
-        add("soapstone");
-        add("nickel");
-        add("platinum");
-        add("pitchblende");
-        add("uranium");
-        add("monazite");
-        add("molybdenum");
-        add("tungstate");
-        add("sapphire");
-        add("manganese");
-        add("quartz");
-        add("diamond");
-        add("olivine");
-        add("apatite");
-        add("galena");
-        add("lapis");
-        add("beryllium");
-        add("oilsand");
+		add("lignite");
+		add("coal");
+		add("magnetite");
+		add("gold");
+		add("iron");
+		add("cassiterite");
+		add("tetrahedrite");
+		add("netherquartz");
+		add("sulfur");
+		add("copper");
+		add("bauxite");
+		add("salts");
+		add("redstone");
+		add("soapstone");
+		add("nickel");
+		add("platinum");
+		add("pitchblende");
+		add("monazite");
+		add("molybdenum");
+		add("tungstate");
+		add("sapphire");
+		add("manganese");
+		add("quartz");
+		add("diamond");
+		add("olivine");
+		add("apatite");
+		add("galena");
+		add("lapis");
+		add("beryllium");
+		add("uranium");
+		add("oilsand");
     }};
 
     public static void readWorldGenConfig() {
@@ -71,9 +71,26 @@ public class ConfigReader {
                 } else if (name.startsWith("RandomWeight")) {
                     vein.weight = prop.getInt();
                 } else if (prop.getBoolean()) {
-                    vein.dims.add(name.substring(0, name.indexOf('_')).toLowerCase());
+                	if(!vein.dims.contains(name.substring(0, name.lastIndexOf('_')).toLowerCase()))
+                    vein.dims.add(name.substring(0, name.lastIndexOf('_')).toLowerCase());
                 }
             }
+            ConfigCategory dims = cfg.getCategory("worldgen.dimensions.ore.mix." + veinName);
+            for (String nn : dims.properties.keySet()){
+            	Property p = dims.properties.get(nn);
+            	String propName = nn.substring(0, nn.lastIndexOf('_'));
+            	if(!p.getBoolean()){
+            		if(vein.dims.contains(propName.toLowerCase()))
+            			vein.dims.remove(propName.toLowerCase());
+            		continue;
+            	}
+            	else{
+            		Property falseP=dims.properties.get(propName+"_false");
+            		if(falseP==null || falseP.getBoolean())
+            			vein.dims.add(nn.substring(0, nn.lastIndexOf('_')).toLowerCase());
+            	}
+            }
+            
             OreVein.add(vein);
         }
     }
