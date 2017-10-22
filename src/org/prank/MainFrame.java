@@ -123,8 +123,8 @@ public class MainFrame extends JFrame {
         StringBuilder sb = new StringBuilder();
         coords.forEach(c -> sb
                 .append(c.x * 16 + 8).append(" ")
-                .append(c.y).append(" ")
                 .append(c.z * 16 + 8).append(" ")
+                .append(c.y).append(" ")
                 .append(result.get(c))
                 .append(System.lineSeparator()));
         taOutput.setText(sb.toString());
