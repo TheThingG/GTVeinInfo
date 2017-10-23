@@ -66,7 +66,7 @@ public class MainFrame extends JFrame {
         /*if (!((chX - 1) % 3 == 0 && (chZ - 1) % 3 == 0)) return null;*/
         if (Math.abs(chX) % 3 == 1 && Math.abs(chZ) % 3 == 1){
 	        boolean tmp = false;
-	        int oreveinPercentage = 100;//TODO:Вынести в конфиг
+	        int oreveinPercentage = 75;//TODO:Вынести в конфиг
 	        int oreveinAttempts = 64;//TODO:Вынести в конфиг
 	        int oreveinRNG = random.nextInt(100);
 	        if (( oreveinRNG < oreveinPercentage) && (OreVein.totalWeight > 0) && (OreVein.ores.size() > 0)){
@@ -153,15 +153,16 @@ public class MainFrame extends JFrame {
 
     private void writeWayPoint(Coord coord, String name) {
         String upName = name.substring(0, 1).toUpperCase() + name.substring(1, name.length());
-        String fn = upName + "_" + coord.x + "," + coord.y + "," + coord.z;
+        int nMult=((getCurrentDimID())==-1)?8:1;
+        String fn = upName + "_" + ((coord.x * 16 + 8) * nMult) + "," + coord.y + "," + ((coord.z * 16 + 8)* nMult);
         int hash = name.hashCode();
         StringBuilder sb = new StringBuilder("{")
                 .append("\"id\": \"").append(fn).append("\", ")
                 .append("\"name\": \"").append(upName).append("\", ")
                 .append("\"icon\": \"waypoint-normal.png\", ")
-                .append("\"x\": ").append(coord.x * 16 + 8).append(", ")
+                .append("\"x\": ").append((coord.x * 16)* nMult + 8*nMult).append(", ")
                 .append("\"y\": ").append(coord.y).append(", ")
-                .append("\"z\": ").append(coord.z * 16 + 8).append(", ")
+                .append("\"z\": ").append((coord.z * 16)* nMult + 8*nMult).append(", ")
                 .append("\"r\": ").append((hash) & 0xff).append(", ")
                 .append("\"g\": ").append((hash >> 8) & 0xff).append(", ")
                 .append("\"b\": ").append((hash >> 16) & 0xff).append(", ")
