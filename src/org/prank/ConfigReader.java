@@ -71,23 +71,32 @@ public class ConfigReader {
                 } else if (name.startsWith("RandomWeight")) {
                     vein.weight = prop.getInt();
                 } else if (prop.getBoolean()) {
-                	if(!vein.dims.contains(name.substring(0, name.lastIndexOf('_')).toLowerCase()))
-                    vein.dims.add(name.substring(0, name.lastIndexOf('_')).toLowerCase());
+                	String dimName = name.substring(0, name.lastIndexOf('_')).toLowerCase();
+                	//костыль для разных вариантов края в конфигфайле гречки
+                	if(dimName.contains("theend") || dimName.contains("the end") || dimName.contains("endasteroid"))
+                		dimName = "theend";
+                	if(!vein.dims.contains(dimName))
+                		vein.dims.add(dimName);
                 }
             }
             ConfigCategory dims = cfg.getCategory("worldgen.dimensions.ore.mix." + veinName);
             for (String nn : dims.properties.keySet()){
             	Property p = dims.properties.get(nn);
             	String propName = nn.substring(0, nn.lastIndexOf('_'));
+            	String dimName= propName.toLowerCase();
+            	//костыль для разных вариантов края в конфигфайле гречки
+            	if(dimName.contains("theend") || dimName.contains("the end") || dimName.contains("endasteroid"))
+            		dimName = "theend";
             	if(!p.getBoolean()){
-            		if(vein.dims.contains(propName.toLowerCase()))
-            			vein.dims.remove(propName.toLowerCase());
+            		if(vein.dims.contains(dimName)){
+            				vein.dims.remove(dimName);
+            		}
             		continue;
             	}
             	else{
             		Property falseP=dims.properties.get(propName+"_false");
             		if(falseP==null || falseP.getBoolean())
-            			vein.dims.add(nn.substring(0, nn.lastIndexOf('_')).toLowerCase());
+            			vein.dims.add(dimName);
             	}
             }
             
